@@ -9,12 +9,12 @@ function solution(citySize, maxChicken, cityMatrix) {
   const chickenLocations = [];
   const houseLocations = [];
 
-  for (let i = 0; i < citySize; i++) {
-    for (let j = 0; j < citySize; j++) {
-      if (cityMatrix[i][j] === 2) chickenLocations.push([i, j]);
-      if (cityMatrix[i][j] === 1) houseLocations.push([i, j]);
-    }
-  }
+  cityMatrix.forEach((row, rowIndex) => {
+    row.forEach((el, colIndex) => {
+      el === 2 && chickenLocations.push([rowIndex, colIndex]);
+      el === 1 && houseLocations.push([rowIndex, colIndex]);
+    });
+  });
 
   const aliveChickensArray = [];
 
@@ -24,29 +24,31 @@ function solution(citySize, maxChicken, cityMatrix) {
       return;
     }
 
-    const visited = new Array(chickenLocations.length).fill(false);
-
-    for (let i = index; i < chickenLocations.length; i++) {
-      if (visited[i]) continue;
-      visited[i] = true;
-      combination(i + 1, [...aliveChickens, chickenLocations[i]], count + 1);
-    }
+    chickenLocations.forEach((location, i) => {
+      if (i < index) return;
+      combination(i + 1, [...aliveChickens, location], count + 1);
+    });
   }
 
   combination(0, [], 0);
 
-  const minChickenDistances = aliveChickensArray.map((aliveChickens) => {
-    const currMinChickenDistances = houseLocations.map(([houseRowIndex, houseColIndex]) => {
-      const chickenDistance = aliveChickens.map(([chickenRowIndex, chickenColIndex]) => {
-        return Math.abs(houseRowIndex - chickenRowIndex) + Math.abs(houseColIndex - chickenColIndex);
-      });
+  const minChickenDistance = aliveChickensArray.reduce((prevMin, aliveChickens) => {
+    const currMinChickenDistance = houseLocations
+      .map(([houseRowIndex, houseColIndex]) => {
+        const minChickenDistanceForHouse = aliveChickens.reduce((minDistance, [chickenRowIndex, chickenColIndex]) => {
+          const chickenDistance = Math.abs(houseRowIndex - chickenRowIndex) + Math.abs(houseColIndex - chickenColIndex);
 
-      return Math.min(...chickenDistance);
-    });
-    return currMinChickenDistances.reduce((acc, curr) => acc + curr, 0);
-  });
+          return Math.min(minDistance, chickenDistance);
+        }, 2 * citySize);
 
-  console.log(Math.min(...minChickenDistances));
+        return minChickenDistanceForHouse;
+      })
+      .reduce((acc, curr) => acc + curr, 0);
+
+    return Math.min(prevMin, currMinChickenDistance);
+  }, Infinity);
+
+  console.log(minChickenDistance);
 }
 
 solution(citySize, maxChicken, cityMatrix);

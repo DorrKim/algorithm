@@ -30,7 +30,6 @@ function solution(citySize, maxChicken, cityMatrix) {
       if (visited[i]) continue;
       visited[i] = true;
       combination(i + 1, [...aliveChickens, chickenLocations[i]], count + 1);
-      visited[i] = false;
     }
   }
 

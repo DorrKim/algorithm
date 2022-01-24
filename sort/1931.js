@@ -19,16 +19,6 @@ function solution(sessions) {
     prevSession = sessions[i];
   }
 
-  // const maxSessions = sessions.reduce(
-  //   (acc, currSession) => {
-  //     const [_, prevEndTime] = acc[acc.length - 1].split(' ').map(Number);
-  //     const [currStartTime, __] = currSession.split(' ').map(Number);
-  //     if (currStartTime < prevEndTime) return acc;
-
-  //     return acc.concat([currSession]);
-  //   },
-  //   ['0 -1']
-  // );
   console.log(maxSessions.length);
 }
 

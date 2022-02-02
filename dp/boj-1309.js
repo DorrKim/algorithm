@@ -1,7 +1,7 @@
 const countCage = +require('fs').readFileSync('dev/stdin').toString().trim();
 
 function solution(countCage) {
-  const cache = new Array(countCage);
+  const cache = new Array(2);
   cache[0] = [2, 1];
 
   for (let i = 1; i < countCage; i++) {

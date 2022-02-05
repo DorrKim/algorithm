@@ -6,14 +6,9 @@ const comparer = (a, b) => {
 };
 
 function solution(numbers) {
-  if (numbers.every((number) => number === '0')) {
-    console.log(0);
-    return;
-  }
-
   const a = numbers.sort(comparer).join('');
 
-  console.log(a === '1111111111111111110111101111101111110111111011011101010101011010101010');
+  console.log(BigInt(a).toString());
 }
 
 solution(numbers);

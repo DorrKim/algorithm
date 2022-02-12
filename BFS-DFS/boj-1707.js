@@ -14,8 +14,12 @@ for (let i = 0; i < countTestCase; i++) {
 }
 
 function solution(testCases) {
-  const result = testCases.map(getResultByCase).join('\n').trim();
-  console.log(result);
+  let result = '';
+
+  testCases.forEach((testCase) => {
+    result += `${getResultByCase(testCase)}\n`;
+  });
+  console.log(result.trim());
 }
 
 function getResultByCase(testCase) {
@@ -36,8 +40,9 @@ function getResultByCase(testCase) {
     adjNodes2.add(node1);
   });
 
+  const visit = new Array(countNode + 1).fill(null);
   for (let i = 1; i < countNode; i++) {
-    const visit = new Array(countNode + 1).fill(null);
+    if (visit[i]) continue;
     const queue = [];
     let queuePointer = 0;
     let nodeResult = 'YES';

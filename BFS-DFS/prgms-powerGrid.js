@@ -29,5 +29,5 @@ function solution(n, wires) {
     const localDiff = Math.abs(powerGrid1 - powerGrid2);
     globalMinDiff = Math.min(localDiff, globalMinDiff);
   }
-  console.log(globalMinDiff);
+  return globalMinDiff;
 }

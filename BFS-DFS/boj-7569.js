@@ -12,10 +12,6 @@ function solution(W, L, H, layers) {
   const queue = [];
   let queuePointer = 0;
 
-  const dx = [0, 0, 0, 0, 1, -1];
-  const dy = [1, -1, 0, 0, 0, 0];
-  const dz = [0, 0, 1, -1, 0, 0];
-
   let lastDay = 0;
 
   for (let i = 0; i < H; i++) {
@@ -35,9 +31,9 @@ function solution(W, L, H, layers) {
     lastDay = day;
 
     for (let i = 0; i < 6; i++) {
-      const nx = colIndex + dx[i];
-      const ny = rowIndex + dy[i];
-      const nz = layerIndex + dz[i];
+      const nx = '111120'[i] - 1 + colIndex;
+      const ny = '201111'[i] - 1 + rowIndex;
+      const nz = '112011'[i] - 1 + layerIndex;
 
       if (layers[nz] === undefined || layers[nz][ny] === undefined || layers[nz][ny][nx] === undefined) continue;
       if (visit[nz][ny][nx] || layers[nz][ny][nx] !== 0) continue;

@@ -22,6 +22,7 @@ function solution(N, M, BOARD) {
         if (nr < 0 || nr >= N || nc < 0 || nc >= M) continue;
         if (visit[nr][nc] || BOARD[nr][nc] !== 0) continue;
         visit[nr][nc] = true;
+
         stack.push([nr, nc]);
       }
     }

@@ -133,7 +133,6 @@ function getMinCost(testCase) {
     let localMinCost = 0;
     localMinCost += priorityQueue.pop();
     localMinCost += priorityQueue.pop();
-
     totalCost += localMinCost;
     priorityQueue.add(localMinCost);
   }

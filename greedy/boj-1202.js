@@ -1,7 +1,7 @@
-// const [NK, ...rest] = require('fs').readFileSync('example.txt').toString().trim().split('\n');
-// const [countJewel, countBag] = NK.trim().split(' ').map(Number);
-// const jewels = rest.slice(0, countJewel).map((jewelInfo) => jewelInfo.trim().split(' ').map(Number));
-// const limitWeights = rest.slice(countJewel).map(Number);
+const [NK, ...rest] = require('fs').readFileSync('example.txt').toString().trim().split('\n');
+const [countJewel, countBag] = NK.trim().split(' ').map(Number);
+const jewels = rest.slice(0, countJewel).map((jewelInfo) => jewelInfo.trim().split(' ').map(Number));
+const limitWeights = rest.slice(countJewel).map(Number);
 
 class Heap {
   constructor() {
@@ -62,7 +62,7 @@ class Heap {
   }
 }
 
-class MaxHeap extends Heap {
+class PriorityQueue extends Heap {
   constructor(comparer) {
     super();
     this.comparer = comparer;
@@ -119,61 +119,21 @@ class MaxHeap extends Heap {
 }
 
 function solution(jewels, limitWeights) {
-  const comparer = (a, b) => {
-    return a[1] > b[1] || (a[1] === b[1] && a[0] > b[0]);
-  };
-  const maxHeap = new MaxHeap(comparer);
-  const ascendingSortedLimits = limitWeights.sort((a, b) => a - b);
-  const descendingSortedJewels = jewels.sort((a, b) => b[0] - a[0]);
-  const maxValuesByBag = new Array(limitWeights.length).fill(null);
+  const maxHeap = new PriorityQueue((a, b) => a > b);
+  jewels.sort((a, b) => b[0] - a[0]);
+  limitWeights.sort((a, b) => a - b);
 
-  if (descendingSortedJewels[0] > ascendingSortedLimits[ascendingSortedLimits.length - 1]) {
-    console.log(0);
-    return;
-  }
+  let result = 0n;
+  limitWeights.forEach((limit) => {
+    while (jewels.length > 0 && jewels[jewels.length - 1][0] <= limit) {
+      const [m, v] = jewels.pop();
+      maxHeap.add(BigInt(v));
+    }
+    if (maxHeap.size() === 0) return;
 
-  jewels.forEach((jewel) => {
-    maxHeap.add(jewel);
+    result += maxHeap.pop();
   });
 
-  let useCount = 0;
-
-  while (true) {
-    const poppedJewel = maxHeap.pop();
-
-    if (!poppedJewel) break;
-
-    const [m, v] = poppedJewel;
-
-    for (let i = 0; i < limitWeights.length; i++) {
-      if (ascendingSortedLimits[i] < m || maxValuesByBag[i] !== null) continue;
-      maxValuesByBag[i] = v;
-      useCount++;
-      break;
-    }
-  }
-
-  // const maxValues = ascendingSortedLimits.map((limit) => {
-  //   const poppedJewels = [];
-  //   let maxLoadableJewelValue = 0;
-
-  //   while (true) {
-  //     const poppedJewel = maxHeap.pop();
-  //     if (!poppedJewel) break;
-
-  //     const [m, v] = poppedJewel;
-  //     if (m <= limit) {
-  //       maxLoadableJewelValue = v;
-  //       break;
-  //     }
-  //     poppedJewels.push([m, v]);
-  //   }
-  //   poppedJewels.forEach((jewel) => maxHeap.add(jewel));
-  //   return maxLoadableJewelValue;
-  // });
-
-  console.log(maxValuesByBag.reduce((a, b) => a + b));
+  console.log(result.toString());
 }
-const jewels = new Array(300000).fill([1000000, 1000000]);
-const limitWeights = new Array(300000).fill(100000000);
 solution(jewels, limitWeights);

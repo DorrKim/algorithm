@@ -1,6 +1,7 @@
-const input = require('fs').readFileSync('example.txt').toString().trim().split('\n');
-const N = +input[0];
-const BOARD = input.slice(1).map((row) => row.split(' '));
+const rl = require('readline').createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
 class Heap {
   constructor() {
@@ -109,20 +110,39 @@ class MinHeap extends Heap {
   }
 }
 
-function solution(N, BOARD) {
-  const minHeap = new MinHeap();
+const minHeap = new MinHeap();
+let start = true;
+let N;
+let count;
 
-  BOARD[0].forEach((number) => {
-    minHeap.add(+number);
-  });
+rl.on('line', (line) => {
+  if (start) {
+    start = false;
+    N = parseInt(line.trim());
 
-  for (let i = 1; i < N; i++) {
-    for (let j = 0; j < N; j++) {
-      minHeap.add(+BOARD[i][j]);
-      minHeap.pop();
-    }
+    count = N;
+  } else if (count === N) {
+    count--;
+    line
+      .split(' ')
+      .map(Number)
+      .forEach((number) => {
+        minHeap.add(number);
+      });
+  } else {
+    count--;
+    line
+      .split(' ')
+      .map(Number)
+      .forEach((number) => {
+        if (minHeap.peekRoot() > number) return;
+        minHeap.pop();
+        minHeap.add(number);
+      });
   }
-  console.log(minHeap.peekRoot());
-}
 
-solution(N, BOARD);
+  if (count === 0) rl.close();
+}).on('close', () => {
+  console.log(minHeap.peekRoot());
+  process.exit();
+});

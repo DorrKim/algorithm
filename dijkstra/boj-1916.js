@@ -1,4 +1,4 @@
-const input = require('fs').readFileSync('example.txt').toString().trim().split('\n');
+const input = require('fs').readFileSync('dev/stdin').toString().trim().split('\n');
 const N = +input[0];
 const M = +input[1];
 const [START, END] = input.pop().split(' ').map(Number);
@@ -78,14 +78,13 @@ class PriorityQueue {
   }
 }
 
-const minHeap = new PriorityQueue((a, b) => a < b);
-
 function solution(N, M, START, END, BUS_ROUTES) {
   const mapConstructArray = new Array(N).fill(null).map((_, index) => [index + 1, new Map()]);
   const adjacentList = new Map(mapConstructArray);
   const sorter = (a, b) => a[0] < b[0];
   const minHeap = new PriorityQueue(sorter);
   const dist = new Array(N + 1).fill(Infinity);
+  const visit = new Array(N + 1).fill(false);
   dist[START] = 0;
 
   BUS_ROUTES.forEach(([v1, v2, cost]) => {
@@ -99,16 +98,15 @@ function solution(N, M, START, END, BUS_ROUTES) {
     }
   });
 
-  adjacentList.get(START).forEach((cost, v) => {
-    dist[v] = cost;
-    minHeap.add([dist[v], v]);
-  });
+  minHeap.add([dist[START], START]);
 
   while (minHeap.heap.length) {
     const [minDist, v1] = minHeap.pop();
+    if (visit[v1]) continue;
+    visit[v1] = true;
 
     adjacentList.get(v1).forEach((cost, v2) => {
-      if (minDist + cost >= dist[v2]) return;
+      if (visit[v2] || minDist + cost >= dist[v2]) return;
       const newMinCost = minDist + cost;
       dist[v2] = newMinCost;
       minHeap.add([newMinCost, v2]);

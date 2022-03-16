@@ -4,17 +4,17 @@ const SHORT_CUTS = input.slice(1).map((shortCut) => shortCut.split(' ').map(Numb
 
 function solution(N, D, SHORT_CUTS) {
   const distances = new Array(D + 1).fill(null).map((_, i) => i);
-  const sortedShortCuts = SHORT_CUTS.sort((a, b) => a[1] - a[0] - a[2] - (b[1] - b[0] - b[2]));
 
-  sortedShortCuts.forEach(([s, e, l]) => {
-    if (e - s <= l || e > D) return;
-    if (distances[s] + l >= distances[e]) return;
-    const diff = distances[e] - (distances[s] + l);
-
-    for (let i = e; i <= D; i++) {
-      distances[i] -= diff;
+  for (let i = 0; i <= D; i++) {
+    if (i > 0) {
+      distances[i] = Math.min(distances[i], distances[i - 1] + 1);
     }
-  });
+    SHORT_CUTS.forEach(([s, e, l]) => {
+      if (i !== s || e > D || distances[e] - distances[s] <= l) return;
+      distances[e] = distances[i] + l;
+    });
+  }
+
   console.log(distances[D]);
 }
 

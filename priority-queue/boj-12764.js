@@ -97,6 +97,10 @@ function solution(N, schedules) {
       } else result[computer - 1] += 1;
     }
 
+    if (using.size === pq.heap.length) {
+      pq.add([start, end, currentNumber]);
+    }
+
     let allUse = true;
 
     for (let [number, use] of computers) {

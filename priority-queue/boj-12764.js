@@ -13,7 +13,7 @@ class PriorityQueue {
   }
 
   getParentIndex(index) {
-    return index !== 0 ? Math.floor((index - 1) / 2) : null;
+    return index > 0 ? Math.floor((index - 1) / 2) : null;
   }
 
   getLeftChildIndex(index) {
@@ -82,45 +82,35 @@ class PriorityQueue {
 function solution(N, schedules) {
   let sortedSchedules = schedules.sort((a, b) => b[0] - a[0]);
   const pq = new PriorityQueue((a, b) => a[1] < b[1]);
-  const using = new Set();
-  const result = [];
+  const using = new Map();
+  const notUsing = new Map();
   let max = 0;
-  let currentNumber = 1;
+  const result = [];
 
   while (sortedSchedules.length) {
     const [start, end] = sortedSchedules.pop();
 
     while (pq.heap.length > 0 && pq.heap[0][1] <= start) {
       const [, , computer] = pq.pop();
-      if (result[computer - 1] === undefined) {
-        result[computer - 1] = 1;
-      } else result[computer - 1] += 1;
+      using.delete(computer);
+      notUsing.set(computer, true);
     }
 
-    if (using.size === pq.heap.length) {
-      pq.add([start, end, currentNumber]);
+    let computerNumber;
+
+    if (notUsing.size) {
+      computerNumber = [...notUsing.keys()][0];
+      notUsing.delete(computerNumber);
+    } else {
+      computerNumber = using.size + 1;
     }
 
-    let allUse = true;
+    using.set(computerNumber, true);
 
-    for (let [number, use] of computers) {
-      if (use) continue;
-      currentNumber = number;
-      allUse = false;
-      break;
-    }
-
-    if (allUse) currentNumber = computers.size + 1;
-    pq.add([start, end, currentNumber]);
-    computers.set(currentNumber, true);
+    pq.add([start, end, computerNumber]);
+    result[computerNumber - 1] = result[computerNumber - 1] === undefined ? 1 : result[computerNumber - 1] + 1;
 
     max = Math.max(max, pq.heap.length);
-  }
-
-  while (pq.heap.length) {
-    const [, , computer] = pq.pop();
-    if (result[computer - 1] === undefined) result[computer - 1] = 1;
-    else result[computer - 1] += 1;
   }
 
   console.log(max);

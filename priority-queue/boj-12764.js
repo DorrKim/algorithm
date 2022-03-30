@@ -82,8 +82,7 @@ class PriorityQueue {
 function solution(N, schedules) {
   let sortedSchedules = schedules.sort((a, b) => b[0] - a[0]);
   const pq = new PriorityQueue((a, b) => a[1] < b[1]);
-  const using = new Map();
-  const notUsing = new Map();
+  const leftSeats = new PriorityQueue((a, b) => a < b);
   let max = 0;
   const result = [];
 
@@ -92,21 +91,15 @@ function solution(N, schedules) {
 
     while (pq.heap.length > 0 && pq.heap[0][1] <= start) {
       const [, , computer] = pq.pop();
-      using.delete(computer);
-      notUsing.set(computer, true);
+      leftSeats.add(computer);
     }
-
     let computerNumber;
 
-    if (notUsing.size) {
-      computerNumber = [...notUsing.keys()][0];
-      notUsing.delete(computerNumber);
+    if (leftSeats.heap.length !== 0) {
+      computerNumber = leftSeats.pop();
     } else {
-      computerNumber = using.size + 1;
+      computerNumber = pq.heap.length + 1;
     }
-
-    using.set(computerNumber, true);
-
     pq.add([start, end, computerNumber]);
     result[computerNumber - 1] = result[computerNumber - 1] === undefined ? 1 : result[computerNumber - 1] + 1;
 

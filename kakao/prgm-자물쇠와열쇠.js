@@ -1,30 +1,12 @@
 function solution(key, lock) {
-  const keys = [key];
-  let rotatedKey = key;
+  const keys = getRotatedKeys(key);
 
-  for (let i = 0; i < 3; i++) {
-    rotatedKey = rotateClockWise(rotatedKey);
-    keys.push(rotatedKey);
-  }
+  const lockSlots = getLockSlots(lock);
 
-  const lockSlots = [];
-
-  for (let i = 0; i < lock.length; i++) {
-    for (let j = 0; j < lock.length; j++) {
-      if (lock[i][j] === 1) continue;
-      lockSlots.push([i, j]);
-    }
-  }
   if (lockSlots.length === 0) return true;
 
   const validKey = keys.find((key) => {
-    const keyPeaks = [];
-    for (let i = 0; i < key.length; i++) {
-      for (let j = 0; j < key.length; j++) {
-        if (key[i][j] === 0) continue;
-        keyPeaks.push([i, j]);
-      }
-    }
+    const keyPeaks = getKeyPeaks(key);
 
     let isValidKey = false;
 
@@ -56,6 +38,41 @@ function solution(key, lock) {
   });
 
   return validKey !== undefined;
+}
+
+function getKeyPeaks(key) {
+  const keyPeaks = [];
+  for (let i = 0; i < key.length; i++) {
+    for (let j = 0; j < key.length; j++) {
+      if (key[i][j] === 0) continue;
+      keyPeaks.push([i, j]);
+    }
+  }
+  return keyPeaks;
+}
+
+function getRotatedKeys(key) {
+  const keys = [key];
+  let rotatedKey = key;
+
+  for (let i = 0; i < 3; i++) {
+    rotatedKey = rotateClockWise(rotatedKey);
+    keys.push(rotatedKey);
+  }
+
+  return keys;
+}
+
+function getLockSlots(lock) {
+  const lockSlots = [];
+
+  for (let i = 0; i < lock.length; i++) {
+    for (let j = 0; j < lock.length; j++) {
+      if (lock[i][j] === 1) continue;
+      lockSlots.push([i, j]);
+    }
+  }
+  return lockSlots;
 }
 
 function rotateClockWise(key) {

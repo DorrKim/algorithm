@@ -1,5 +1,3 @@
-const { join } = require('path');
-
 const input = require('fs').readFileSync('example.txt').toString().trim().split('\n');
 const N = +input[0];
 const infos = input.slice(1).map((line) => line.split(' '));

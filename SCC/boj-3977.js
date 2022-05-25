@@ -32,18 +32,12 @@ function getStartPoint(testCase) {
   }
 
   const indegree = new Array(sccNumber).fill(0);
-  const indegreeMap = new Map();
 
   for (let i = 0; i < n; i++) {
     if (adjacencyList.has(i)) {
       adjacencyList.get(i).forEach((next) => {
         if (sccIndex[i] !== sccIndex[next]) {
           indegree[sccIndex[next]] += 1;
-
-          if (!indegreeMap.has(sccIndex[next])) {
-            indegreeMap.set(sccIndex[next], new Set());
-          }
-          indegreeMap.get(sccIndex[next]).add(sccIndex[i]);
         }
       });
     }
